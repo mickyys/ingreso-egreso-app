@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducers';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -8,14 +11,27 @@ import { AuthService } from '../auth.service';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(private authService : AuthService) { }
+  public isLoading : boolean = false;
+  private subscription : Subscription;
+
+  constructor(private authService : AuthService
+             ,private store : Store<AppState>
+    ) { }
 
   ngOnInit() {
+    this.subscription = this.store.select('ui').subscribe(
+      ui => {
+        this.isLoading = ui.isLoading
+      }
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   onSubmit(form : any ){
-    this.authService.crearUsuario(form.nombre, form.email, form.password);
-    console.log(form);
+    this.authService.crearUsuario(form.nombre, form.email, form.password);    
   }
 
 }

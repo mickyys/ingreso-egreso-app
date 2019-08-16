@@ -20,8 +20,13 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 
+import { StoreModule } from '@ngrx/store'
+import { StoreDevtoolsModule } from '@ngrx/store-devtools'
+
+
 //Modules
 import { AppRoutingModule } from './app-routing.module';
+import { appReducers } from './app.reducers';
 
 @NgModule({
   declarations: [
@@ -43,7 +48,12 @@ import { AppRoutingModule } from './app-routing.module';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireStorageModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    StoreModule.forRoot(appReducers),
+    StoreDevtoolsModule.instrument({
+      maxAge : 25,
+      logOnly : environment.production
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
