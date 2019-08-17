@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducers';
+import { Subscription } from 'rxjs';
+import { IngresoEgreso } from '../ingreso-egreso.model';
+import { ChartType } from 'chart.js';
+import { MultiDataSet } from 'ng2-charts';
 
 @Component({
   selector: 'app-estadisticas',
@@ -7,9 +13,45 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EstadisticasComponent implements OnInit {
 
-  constructor() { }
+  ingresos : number;
+  egresos : number;
+
+  cantidadIngresos : number;
+  cantidadEgresos : number;
+
+  subscription : Subscription = new Subscription();
+
+  public doughnutChartLabels: string[] = ['Ingresos', 'Egresos'];
+  public doughnutChartData: number [] = [];
+  public doughnutChartType: ChartType = 'doughnut';
+
+  constructor(private store : Store<AppState>) { }
 
   ngOnInit() {
+    this.subscription = this.store.select('ingresoEgreso')
+                              .subscribe( ingresoEgreso => {
+                                  this.contarIngresoEgreso(ingresoEgreso.items)
+                              });
+  }
+
+  contarIngresoEgreso(items : IngresoEgreso[]){
+      this.ingresos = 0;
+      this.egresos = 0;
+
+      this.cantidadEgresos = 0;
+      this.cantidadIngresos = 0;
+
+      items.forEach( item =>{
+        if(item.tipo === 'ingreso'){
+          this.cantidadIngresos ++;
+          this.ingresos += item.monto;
+        }else{
+          this.cantidadEgresos ++;
+          this.egresos += item.monto;
+        }
+      });
+
+      this.doughnutChartData = [this.ingresos, this.egresos];
   }
 
 }
