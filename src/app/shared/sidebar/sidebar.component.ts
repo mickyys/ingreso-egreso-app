@@ -14,7 +14,7 @@ import { IngresoEgresoService } from 'src/app/ingreso-egreso/ingreso-egreso.serv
 })
 export class SidebarComponent implements OnInit, OnDestroy {
  
-  public usuario : User;
+  public nombre : string;
   public subscription : Subscription = new Subscription();
   
   constructor(private authService : AuthService, private ingresoEgresoService : IngresoEgresoService, private store : Store<AppState>) { }
@@ -26,7 +26,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     )
     .subscribe(
       auth => {
-        this.usuario = auth.user;
+        this.nombre = auth.user.nombre;
       }
     )
   }
